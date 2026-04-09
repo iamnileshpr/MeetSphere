@@ -3,6 +3,7 @@ import cors from 'cors';
 const app = express();
 import dotenv from 'dotenv'
 import connectDb from './config/database.js';
+import errorHandler from './middleware/errorHandler.js';
 dotenv.config();
 
 const PORT = process.env.PORT;
@@ -25,6 +26,8 @@ app.get("/api/health", function(req, res) {
         timeStamp: new Date().toISOString()
     })
 })
+
+app.use(errorHandler)
 
 app.listen(PORT, () => {
     console.log(`server is running on this port ${PORT} `);
