@@ -45,7 +45,7 @@
        try {
            const { email, password } = req.body;
            const user = await User.findOne({ email }).select('+password')
-           if (user) {
+           if (!user) {
                return res.status(401).json({
                    success: false,
                    error: 'Invalid email and password'
@@ -64,7 +64,7 @@
            //generate token
 
            const token = genrateToken(user._id);
-           res.status(200).json({
+           res.status(201).json({
                success: true,
                data: {
                    user: {
@@ -79,5 +79,31 @@
        } catch (error) {
            next(error)
 
+       }
+   }
+   export const getMe = async(req, res, next) => {
+       try {
+           const userId = req.user.userId;
+           const user = await User.findById(userId)
+           if (!user) {
+               return res.status(404).json({
+                   success: false,
+                   error: 'user not found'
+               })
+           }
+           res.status(201).json({
+               success: true,
+               data: {
+                   user: {
+                       id: user._id,
+                       name: user.name,
+                       email: user.email
+                   },
+                   message: "user get successfully"
+               },
+               message: "user login successfully"
+           })
+       } catch (error) {
+           next(error)
        }
    }
