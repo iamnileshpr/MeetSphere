@@ -1,34 +1,39 @@
 const errorHandler = (err, req, res, next) => {
-    let statusCode = err.statusCode || 500; //error meassage will show else by default 500 error will be show
-    let message = err.message | 'Interval server error' //error message
+    let statusCode = err.statusCode || 500;
+    let message = err.message | 'Interval server error';
 
-    if (err.name == 'validationErro') { //to handle mongooose error
+    //Mongoose validation error
+    if (err.name === 'ValidationError') {
         statusCode = 400;
         message = Object.values(err.errors).map(error => error.message).join(', ')
     }
 
-    //to handle duplicate errori i.e if two person using same email
-
-    if (err.code == 1100) {
+    //mongoose duplicate key error
+    if (err.code === 11000) {
         statusCode = 400;
-        message = "Duplicate value entered"
+        message = 'Duplicate field value entered'
     }
 
     //JWT
-    if (err.name == 'jsonWebTokenError') {
+    if (err.name === 'JsonWebTokenError') {
         statusCode = 401;
         message = 'Invalid Token'
     }
-    if (err.name == 'TokenExpiredError') {
+
+    if (err.name === 'TokenExpiredError') {
         statusCode = 401;
-        message = 'Token Expired'
+        message = 'Token expired'
     }
-    console.error("Error", err);
+
+
+    console.error('Error', err);
 
     res.status(statusCode).json({
         success: false,
-        error: message
+        error: message,
     })
 }
+
+
 
 export default errorHandler;
