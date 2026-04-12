@@ -4,7 +4,7 @@ import cors from 'cors'
 import connectDb from './config/database.js';
 import errorHandler from './middleware/errorHandler.js';
 import authRoute from './routes/auth.js'
-//import sessionRoute from './routes/sessionRoute.js'
+import sessionRoute from './routes/sessionRoute.js'
 
 
 
@@ -36,7 +36,7 @@ app.get('/api/health', (req, res) => {
 
 //Api routes
 app.use('/api/auth', authRoute)
-    //app.use('/api/session', sessionRoute)
+app.use('/api/session', sessionRoute)
 
 app.use(errorHandler)
 
